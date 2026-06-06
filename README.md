@@ -1,11 +1,11 @@
-# Django Project Initializer
+# pypro
 
 Interactive Python web project initializer for Django, Django REST Framework, and FastAPI.
 
 ## Install
 
 ```bash
-pipx install django-project-initializer
+pipx install git+https://github.com/abhidiwakar/pypro.git
 ```
 
 ## Usage

@@ -111,7 +111,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "django-project-initializer"
+name = "pypro"
 version = "0.1.0"
 description = "Interactive Python web project initializer for Django, Django REST Framework, and FastAPI."
 readme = "README.md"
@@ -157,7 +157,7 @@ include = [
 Create `README.md`:
 
 ````markdown
-# Django Project Initializer
+# pypro
 
 Interactive Python web project initializer for Django, Django REST Framework, and FastAPI.
 
@@ -2078,14 +2078,14 @@ Expected: PASS.
 Replace `README.md` with:
 
 ````markdown
-# Django Project Initializer
+# pypro
 
 Interactive Python web project initializer for Django, Django REST Framework, and FastAPI.
 
 ## Install
 
 ```bash
-pipx install django-project-initializer
+pipx install git+https://github.com/abhidiwakar/pypro.git
 ```
 
 ## Usage
@@ -2169,7 +2169,7 @@ python -m pip install build
 python -m build
 ```
 
-Expected: `dist/django_project_initializer-0.1.0-py3-none-any.whl` and source distribution are created.
+Expected: `dist/pypro-0.1.0-py3-none-any.whl` and source distribution are created.
 
 - [ ] **Step 2: Install the wheel in a temporary virtual environment**
 
@@ -2177,7 +2177,7 @@ Run:
 
 ```bash
 python -m venv /tmp/pypro-verify
-/tmp/pypro-verify/bin/pip install dist/django_project_initializer-0.1.0-py3-none-any.whl
+/tmp/pypro-verify/bin/pip install dist/pypro-0.1.0-py3-none-any.whl
 /tmp/pypro-verify/bin/pypro --version
 ```
 

@@ -31,7 +31,7 @@ The MVP supports these configurable features:
 The user installs the utility with `pipx`:
 
 ```bash
-pipx install django-project-initializer
+pipx install git+https://github.com/abhidiwakar/pypro.git
 ```
 
 Then runs:
