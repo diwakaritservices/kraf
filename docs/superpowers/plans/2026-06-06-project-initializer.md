@@ -88,7 +88,7 @@ def test_version_command_displays_package_version():
     result = runner.invoke(app, ["--version"])
 
     assert result.exit_code == 0
-    assert "project-init 0.1.0" in result.stdout
+    assert "pypro 0.1.0" in result.stdout
 ```
 
 - [ ] **Step 2: Run the test to verify it fails**
@@ -129,7 +129,7 @@ dev = [
 ]
 
 [project.scripts]
-project-init = "project_initializer.cli:app"
+pypro = "project_initializer.cli:app"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -187,7 +187,7 @@ import typer
 from project_initializer import __version__
 
 app = typer.Typer(
-    name="project-init",
+    name="pypro",
     help="Create production-ready Python web projects from interactive prompts.",
     no_args_is_help=False,
 )
@@ -195,7 +195,7 @@ app = typer.Typer(
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"project-init {__version__}")
+        typer.echo(f"pypro {__version__}")
         raise typer.Exit()
 
 
@@ -203,7 +203,7 @@ def _version_callback(value: bool) -> None:
 def main(
     version: Annotated[
         bool,
-        typer.Option("--version", help="Show the installed project-init version.", callback=_version_callback),
+        typer.Option("--version", help="Show the installed pypro version.", callback=_version_callback),
     ] = False,
 ) -> None:
     return None
@@ -1346,7 +1346,7 @@ Create `src/project_initializer/packs/common/templates/README.md.j2`:
 ````markdown
 # {{ project.project_name }}
 
-Generated with project-init.
+Generated with pypro.
 
 ## Development
 
@@ -1950,7 +1950,7 @@ from project_initializer.renderer import render_project
 from project_initializer.resources import builtin_pack_dirs
 
 app = typer.Typer(
-    name="project-init",
+    name="pypro",
     help="Create production-ready Python web projects from interactive prompts.",
     invoke_without_command=True,
     no_args_is_help=False,
@@ -1959,7 +1959,7 @@ app = typer.Typer(
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"project-init {__version__}")
+        typer.echo(f"pypro {__version__}")
         raise typer.Exit()
 
 
@@ -1968,7 +1968,7 @@ def main(
     ctx: typer.Context,
     version: Annotated[
         bool,
-        typer.Option("--version", help="Show the installed project-init version.", callback=_version_callback),
+        typer.Option("--version", help="Show the installed pypro version.", callback=_version_callback),
     ] = False,
     target_root: Annotated[
         Path,
@@ -2091,10 +2091,8 @@ pipx install django-project-initializer
 ## Usage
 
 ```bash
-project-init
+pypro init
 ```
-
-You can also run `project-init new` if you prefer an explicit subcommand.
 
 The CLI asks for:
 
@@ -2178,22 +2176,22 @@ Expected: `dist/django_project_initializer-0.1.0-py3-none-any.whl` and source di
 Run:
 
 ```bash
-python -m venv /tmp/project-init-verify
-/tmp/project-init-verify/bin/pip install dist/django_project_initializer-0.1.0-py3-none-any.whl
-/tmp/project-init-verify/bin/project-init --version
+python -m venv /tmp/pypro-verify
+/tmp/pypro-verify/bin/pip install dist/django_project_initializer-0.1.0-py3-none-any.whl
+/tmp/pypro-verify/bin/pypro --version
 ```
 
-Expected: `project-init 0.1.0`.
+Expected: `pypro 0.1.0`.
 
 - [ ] **Step 3: Generate a project from the installed command**
 
 Run:
 
 ```bash
-mkdir -p /tmp/project-init-output
-printf "Inventory Service\n3\n2\ny\ny\ny\ny\ny\n" | /tmp/project-init-verify/bin/project-init new --target-root /tmp/project-init-output
-test -f /tmp/project-init-output/inventory-service/app/main.py
-test -f /tmp/project-init-output/inventory-service/alembic.ini
+mkdir -p /tmp/pypro-output
+printf "Inventory Service\n3\n2\ny\ny\ny\ny\ny\n" | /tmp/pypro-verify/bin/pypro init --target-root /tmp/pypro-output
+test -f /tmp/pypro-output/inventory-service/app/main.py
+test -f /tmp/pypro-output/inventory-service/alembic.ini
 ```
 
 Expected: command exits 0 and both generated files exist.

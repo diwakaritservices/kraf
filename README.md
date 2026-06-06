@@ -11,10 +11,8 @@ pipx install django-project-initializer
 ## Usage
 
 ```bash
-project-init
+pypro init
 ```
-
-You can also run `project-init new` if you prefer an explicit subcommand.
 
 The CLI asks for:
 

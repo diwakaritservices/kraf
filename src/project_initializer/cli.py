@@ -12,46 +12,35 @@ from project_initializer.renderer import render_project
 from project_initializer.resources import builtin_pack_dirs
 
 app = typer.Typer(
-    name="project-init",
+    name="pypro",
     help="Create production-ready Python web projects from interactive prompts.",
-    invoke_without_command=True,
-    no_args_is_help=False,
+    no_args_is_help=True,
 )
 
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"project-init {__version__}")
+        typer.echo(f"pypro {__version__}")
         raise typer.Exit()
 
 
 @app.callback()
 def main(
-    ctx: typer.Context,
     version: Annotated[
         bool,
         typer.Option(
             "--version",
-            help="Show the installed project-init version.",
+            help="Show the installed pypro version.",
             callback=_version_callback,
             is_eager=True,
         ),
     ] = False,
-    target_root: Annotated[
-        Path | None,
-        typer.Option(
-            "--target-root",
-            help="Directory where the generated project folder is created.",
-        ),
-    ] = None,
 ) -> None:
-    if ctx.invoked_subcommand is None:
-        _generate(target_root or Path.cwd())
     return None
 
 
 @app.command()
-def new(
+def init(
     target_root: Annotated[
         Path | None,
         typer.Option(

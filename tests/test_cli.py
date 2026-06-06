@@ -9,15 +9,15 @@ def test_version_command_displays_package_version():
     result = runner.invoke(app, ["--version"])
 
     assert result.exit_code == 0
-    assert "project-init 0.1.0" in result.stdout
+    assert "pypro 0.1.0" in result.stdout
 
 
-def test_new_command_generates_fastapi_project(tmp_path):
+def test_init_command_generates_fastapi_project(tmp_path):
     runner = CliRunner()
 
     result = runner.invoke(
         app,
-        ["new", "--target-root", str(tmp_path)],
+        ["init", "--target-root", str(tmp_path)],
         input="Inventory Service\n3\n2\ny\ny\ny\ny\ny\n",
     )
 
@@ -26,15 +26,12 @@ def test_new_command_generates_fastapi_project(tmp_path):
     assert "Created project" in result.stdout
 
 
-def test_root_command_generates_fastapi_project(tmp_path):
+def test_root_command_no_longer_generates_project(tmp_path):
     runner = CliRunner()
 
-    result = runner.invoke(
-        app,
-        ["--target-root", str(tmp_path)],
-        input="Inventory Service\n3\n2\ny\ny\ny\ny\ny\n",
-    )
+    result = runner.invoke(app, [])
 
-    assert result.exit_code == 0, result.stdout
-    assert (tmp_path / "inventory-service" / "app" / "main.py").exists()
-    assert "Created project" in result.stdout
+    assert result.exit_code != 0
+    assert not (tmp_path / "inventory-service").exists()
+    assert "Usage:" in result.stdout
+    assert "init" in result.stdout

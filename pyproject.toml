@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-project-init = "project_initializer.cli:app"
+pypro = "project_initializer.cli:app"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
