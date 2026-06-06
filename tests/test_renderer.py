@@ -177,3 +177,27 @@ def test_render_builtin_django_project_omits_drf_imports(tmp_path: Path):
 
     assert "rest_framework" not in settings
     assert "include" not in urls
+
+
+def test_render_builtin_django_sqlite_project(tmp_path: Path):
+    config = ProjectConfig(
+        project_name="Blog Admin",
+        project_slug="blog-admin",
+        package_name="blog_admin",
+        target_dir=tmp_path / "blog-admin",
+        project_type=ProjectType.DJANGO,
+        database=Database.SQLITE,
+        tooling=ToolingOptions(use_docker=False, use_pytest=True, use_ruff=True),
+        use_sqlalchemy=False,
+        use_alembic=False,
+    )
+    pack_dirs = {pack_dir.name: pack_dir for pack_dir in builtin_pack_dirs()}
+    packs = resolve_packs(config)
+
+    render_project(config, [(pack, pack_dirs[pack.name]) for pack in packs])
+
+    settings = (config.target_dir / "blog_admin" / "settings.py").read_text(encoding="utf-8")
+
+    assert (config.target_dir / "manage.py").exists()
+    assert "django.db.backends.sqlite3" in settings
+    assert "rest_framework" not in settings
