@@ -18,7 +18,7 @@ def test_init_command_generates_fastapi_project(tmp_path):
     result = runner.invoke(
         app,
         ["init", "--target-root", str(tmp_path)],
-        input="Inventory Service\n3\n2\ny\ny\ny\ny\ny\n",
+        input="Inventory Service\n3\n3\ny\ny\ny\ny\ny\n",
     )
 
     assert result.exit_code == 0, result.stdout
@@ -32,7 +32,7 @@ def test_init_command_generates_fastapi_project_without_database(tmp_path):
     result = runner.invoke(
         app,
         ["init", "--target-root", str(tmp_path)],
-        input="Inventory Service\n3\n3\ny\ny\ny\n",
+        input="Inventory Service\n3\n1\ny\ny\ny\n",
     )
 
     assert result.exit_code == 0, result.stdout
