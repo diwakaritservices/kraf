@@ -1,5 +1,6 @@
 name: orm_sqlalchemy
 dependencies:
+  - python-dotenv
   - sqlalchemy
 files:
   - source: app/db/base.py.j2

@@ -121,8 +121,10 @@ def test_render_builtin_fastapi_sqlalchemy_alembic_project(tmp_path: Path):
     compose = (config.target_dir / "docker-compose.yml").read_text(encoding="utf-8")
     env = (config.target_dir / ".env.example").read_text(encoding="utf-8")
     makefile = (config.target_dir / "Makefile").read_text(encoding="utf-8")
+    requirements = (config.target_dir / "requirements.txt").read_text(encoding="utf-8")
     assert "apt-get install" in (config.target_dir / "Dockerfile").read_text(encoding="utf-8")
     assert "make" in (config.target_dir / "Dockerfile").read_text(encoding="utf-8")
+    assert "python-dotenv" in requirements
     assert "db:" in compose
     assert "image: postgres:16-alpine" in compose
     assert "depends_on:" in compose
@@ -136,6 +138,12 @@ def test_render_builtin_fastapi_sqlalchemy_alembic_project(tmp_path: Path):
     assert "docker-up:\n\tdocker compose up --build" in makefile
     assert "$(VENV_PYTHON) -m pip install" in makefile
     assert "$(VENV_PYTHON) -m alembic upgrade head" in makefile
+    session = (config.target_dir / "app" / "db" / "session.py").read_text(encoding="utf-8")
+    alembic_env = (config.target_dir / "alembic" / "env.py").read_text(encoding="utf-8")
+    assert "from dotenv import load_dotenv" in session
+    assert "load_dotenv()" in session
+    assert "from dotenv import load_dotenv" in alembic_env
+    assert "load_dotenv()" in alembic_env
     base_model = (config.target_dir / "app" / "db" / "base.py").read_text(encoding="utf-8")
     models = (config.target_dir / "app" / "db" / "models.py").read_text(encoding="utf-8")
     assert "class BaseModel(Base):" in base_model
