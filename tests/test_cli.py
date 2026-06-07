@@ -9,7 +9,7 @@ def test_version_command_displays_package_version():
     result = runner.invoke(app, ["--version"])
 
     assert result.exit_code == 0
-    assert "kraf 0.1.0" in result.stdout
+    assert "kraf 0.1.1" in result.stdout
 
 
 def test_init_command_generates_fastapi_project(tmp_path):
