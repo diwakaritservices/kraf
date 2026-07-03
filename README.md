@@ -45,7 +45,8 @@ make migrate
 ```
 
 Migration commands are generated only for database-backed projects. `make migrations`
-creates a migration, while `make migrate` applies migrations.
+creates a migration, while `make migrate` applies migrations. Alembic projects also
+provide `make revision`; both revision creation commands prompt for a migration message.
 
 ## Development
 

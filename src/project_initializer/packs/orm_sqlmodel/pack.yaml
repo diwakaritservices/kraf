@@ -1,7 +1,7 @@
-name: orm_sqlalchemy
+name: orm_sqlmodel
 dependencies:
   - python-dotenv
-  - sqlalchemy
+  - sqlmodel
   - bcrypt
   - email-validator
 files:
@@ -20,4 +20,4 @@ files:
 requires:
   - fastapi
 conflicts:
-  - orm_sqlmodel
+  - orm_sqlalchemy

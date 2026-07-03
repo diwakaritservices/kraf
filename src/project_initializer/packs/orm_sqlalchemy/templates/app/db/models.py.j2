@@ -3,7 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import BaseModel
 
 
-class Example(BaseModel):
-    __tablename__ = "examples"
+class User(BaseModel):
+    __tablename__ = "users"
 
-    name: Mapped[str] = mapped_column(index=True)
+    email: Mapped[str] = mapped_column(unique=True, index=True)
+    name: Mapped[str] = mapped_column(default="")
+    hashed_password: Mapped[str] = mapped_column()
+    is_active: Mapped[bool] = mapped_column(default=True)

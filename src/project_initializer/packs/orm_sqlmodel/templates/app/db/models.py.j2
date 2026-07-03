@@ -1,0 +1,10 @@
+from sqlmodel import Field
+
+from app.db.base import BaseModel
+
+
+class User(BaseModel, table=True):
+    email: str = Field(unique=True, index=True)
+    name: str = Field(default="")
+    hashed_password: str
+    is_active: bool = Field(default=True)

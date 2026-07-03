@@ -1,0 +1,25 @@
+import subprocess
+import sys
+
+
+def main() -> None:
+    message = input("Migration message: ").strip()
+    if not message:
+        raise SystemExit("Migration message is required.")
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "alembic",
+            "revision",
+            "--autogenerate",
+            "-m",
+            message,
+        ],
+        check=True,
+    )
+
+
+if __name__ == "__main__":
+    main()

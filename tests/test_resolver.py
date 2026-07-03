@@ -2,7 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from project_initializer.config import Database, ProjectConfig, ProjectType, ToolingOptions
+from project_initializer.config import (
+    Database,
+    OrmChoice,
+    ProjectConfig,
+    ProjectType,
+    ToolingOptions,
+)
 from project_initializer.errors import PackError
 from project_initializer.pack import PackManifest, resolve_packs
 
@@ -11,7 +17,7 @@ def _config(
     project_type: ProjectType,
     *,
     database: Database = Database.POSTGRESQL,
-    sqlalchemy: bool = False,
+    orm: OrmChoice = OrmChoice.NONE,
     alembic: bool = False,
 ):
     return ProjectConfig(
@@ -22,19 +28,34 @@ def _config(
         project_type=project_type,
         database=database,
         tooling=ToolingOptions(use_docker=True, use_pytest=True, use_ruff=True),
-        use_sqlalchemy=sqlalchemy,
+        orm=orm,
         use_alembic=alembic,
     )
 
 
 def test_resolve_fastapi_sqlalchemy_alembic_packs():
-    packs = resolve_packs(_config(ProjectType.FASTAPI, sqlalchemy=True, alembic=True))
+    packs = resolve_packs(_config(ProjectType.FASTAPI, orm=OrmChoice.SQLALCHEMY, alembic=True))
 
     assert [pack.name for pack in packs] == [
         "common",
         "fastapi",
         "database_postgres",
         "orm_sqlalchemy",
+        "migrations_alembic",
+        "tooling_pytest",
+        "tooling_ruff",
+        "docker",
+    ]
+
+
+def test_resolve_fastapi_sqlmodel_alembic_packs():
+    packs = resolve_packs(_config(ProjectType.FASTAPI, orm=OrmChoice.SQLMODEL, alembic=True))
+
+    assert [pack.name for pack in packs] == [
+        "common",
+        "fastapi",
+        "database_postgres",
+        "orm_sqlmodel",
         "migrations_alembic",
         "tooling_pytest",
         "tooling_ruff",
@@ -91,7 +112,7 @@ def test_validate_pack_requires_selected_pack():
 
 
 def test_default_resolver_uses_builtin_pack_manifests():
-    packs = resolve_packs(_config(ProjectType.FASTAPI, sqlalchemy=True, alembic=True))
+    packs = resolve_packs(_config(ProjectType.FASTAPI, orm=OrmChoice.SQLALCHEMY, alembic=True))
 
     dependencies = {dependency for pack in packs for dependency in pack.dependencies}
 
@@ -105,7 +126,7 @@ def test_resolve_no_database_omits_database_and_orm_packs():
         _config(
             ProjectType.FASTAPI,
             database=Database.NONE,
-            sqlalchemy=True,
+            orm=OrmChoice.SQLALCHEMY,
             alembic=True,
         )
     )

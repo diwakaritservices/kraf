@@ -6,9 +6,13 @@ files:
     destination: alembic.ini
   - source: alembic/env.py.j2
     destination: alembic/env.py
+  - source: alembic/script.py.mako.j2
+    destination: alembic/script.py.mako
+  - source: scripts/create_migration.py.j2
+    destination: scripts/create_migration.py
 make_targets:
   migrate: "$(VENV_PYTHON) -m alembic upgrade head"
-  migrations: "$(VENV_PYTHON) -m alembic revision --autogenerate -m \"change\""
-  revision: "$(VENV_PYTHON) -m alembic revision --autogenerate -m \"change\""
+  migrations: "$(VENV_PYTHON) scripts/create_migration.py"
+  revision: "$(VENV_PYTHON) scripts/create_migration.py"
 requires:
-  - orm_sqlalchemy
+  - fastapi

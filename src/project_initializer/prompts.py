@@ -35,6 +35,12 @@ DATABASE_CHOICES = (
     PromptChoice("PostgreSQL", "postgresql", "Production-style database"),
 )
 
+ORM_CHOICES = (
+    PromptChoice("No ORM", "none", "Use the database without an ORM layer"),
+    PromptChoice("SQLAlchemy", "sqlalchemy", "Classic SQLAlchemy ORM"),
+    PromptChoice("SQLModel", "sqlmodel", "SQLAlchemy + Pydantic via SQLModel"),
+)
+
 
 def collect_answers(backend: PromptBackend | None = None) -> dict[str, object]:
     prompt = backend or _default_backend()
@@ -44,18 +50,18 @@ def collect_answers(backend: PromptBackend | None = None) -> dict[str, object]:
     project_type = prompt.select("Choose a project type", PROJECT_TYPE_CHOICES)
     database = prompt.select("Choose a database", DATABASE_CHOICES)
 
-    use_sqlalchemy = False
+    orm = "none"
     use_alembic = False
     if project_type == "fastapi" and database != "none":
-        use_sqlalchemy = prompt.confirm("Use SQLAlchemy ORM?", default=True)
-        if use_sqlalchemy:
+        orm = prompt.select("Choose an ORM", ORM_CHOICES)
+        if orm != "none":
             use_alembic = prompt.confirm("Use Alembic migrations?", default=True)
 
     return {
         "project_name": project_name,
         "project_type": project_type,
         "database": database,
-        "use_sqlalchemy": use_sqlalchemy,
+        "orm": orm,
         "use_alembic": use_alembic,
         "use_pytest": prompt.confirm("Include pytest?", default=True),
         "use_ruff": prompt.confirm("Include Ruff?", default=True),

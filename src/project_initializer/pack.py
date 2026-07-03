@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from project_initializer.config import Database, ProjectConfig, ProjectType
+from project_initializer.config import Database, OrmChoice, ProjectConfig, ProjectType
 from project_initializer.errors import PackError
 
 
@@ -165,8 +165,10 @@ def _pack_names_for_config(config: ProjectConfig) -> list[str]:
     ):
         names.append("django_models")
 
-    if config.use_sqlalchemy and config.database is not Database.NONE:
+    if config.orm is OrmChoice.SQLALCHEMY and config.database is not Database.NONE:
         names.append("orm_sqlalchemy")
+    elif config.orm is OrmChoice.SQLMODEL and config.database is not Database.NONE:
+        names.append("orm_sqlmodel")
     if config.use_alembic and config.database is not Database.NONE:
         names.append("migrations_alembic")
     if config.tooling.use_pytest:

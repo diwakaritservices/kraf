@@ -1,6 +1,12 @@
 import pytest
 
-from project_initializer.config import Database, ProjectType, ToolingOptions, normalize_answers
+from project_initializer.config import (
+    Database,
+    OrmChoice,
+    ProjectType,
+    ToolingOptions,
+    normalize_answers,
+)
 from project_initializer.errors import InvalidProjectNameError
 
 
@@ -13,8 +19,8 @@ def test_normalize_django_drf_answers_selects_django_stack():
             "use_docker": True,
             "use_pytest": True,
             "use_ruff": True,
-            "use_sqlalchemy": False,
             "use_alembic": False,
+            "orm": "none",
         }
     )
 
@@ -26,7 +32,7 @@ def test_normalize_django_drf_answers_selects_django_stack():
     assert config.tooling == ToolingOptions(use_docker=True, use_pytest=True, use_ruff=True)
 
 
-def test_fastapi_without_sqlalchemy_disables_alembic():
+def test_fastapi_without_orm_disables_alembic():
     config = normalize_answers(
         {
             "project_name": "Inventory Service",
@@ -35,12 +41,12 @@ def test_fastapi_without_sqlalchemy_disables_alembic():
             "use_docker": False,
             "use_pytest": True,
             "use_ruff": True,
-            "use_sqlalchemy": False,
+            "orm": "none",
             "use_alembic": True,
         }
     )
 
-    assert config.use_sqlalchemy is False
+    assert config.orm is OrmChoice.NONE
     assert config.use_alembic is False
 
 
@@ -77,18 +83,18 @@ def test_non_string_project_name_is_rejected():
 
 
 @pytest.mark.parametrize("project_type", ["django", "django_drf"])
-def test_django_stacks_disable_sqlalchemy_and_alembic(project_type):
+def test_django_stacks_disable_orm_and_alembic(project_type):
     config = normalize_answers(
         {
             "project_name": "Customer API",
             "project_type": project_type,
             "database": "postgresql",
-            "use_sqlalchemy": True,
+            "orm": "sqlalchemy",
             "use_alembic": True,
         }
     )
 
-    assert config.use_sqlalchemy is False
+    assert config.orm is OrmChoice.NONE
     assert config.use_alembic is False
 
 
@@ -98,26 +104,41 @@ def test_fastapi_with_sqlalchemy_preserves_alembic():
             "project_name": "Inventory Service",
             "project_type": "fastapi",
             "database": "postgresql",
-            "use_sqlalchemy": True,
+            "orm": "sqlalchemy",
             "use_alembic": True,
         }
     )
 
-    assert config.use_sqlalchemy is True
+    assert config.orm is OrmChoice.SQLALCHEMY
     assert config.use_alembic is True
 
 
-def test_fastapi_no_database_disables_sqlalchemy_and_alembic():
+def test_fastapi_with_sqlmodel_preserves_alembic():
+    config = normalize_answers(
+        {
+            "project_name": "Inventory Service",
+            "project_type": "fastapi",
+            "database": "postgresql",
+            "orm": "sqlmodel",
+            "use_alembic": True,
+        }
+    )
+
+    assert config.orm is OrmChoice.SQLMODEL
+    assert config.use_alembic is True
+
+
+def test_fastapi_no_database_disables_orm_and_alembic():
     config = normalize_answers(
         {
             "project_name": "Inventory Service",
             "project_type": "fastapi",
             "database": "none",
-            "use_sqlalchemy": True,
+            "orm": "sqlmodel",
             "use_alembic": True,
         }
     )
 
     assert config.database is Database.NONE
-    assert config.use_sqlalchemy is False
+    assert config.orm is OrmChoice.NONE
     assert config.use_alembic is False

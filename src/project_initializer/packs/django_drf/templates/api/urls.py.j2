@@ -1,7 +1,21 @@
-from django.urls import path
+from django.urls import include, path
+{% if project.database.value != "none" %}
+from rest_framework.routers import DefaultRouter
+{% endif %}
 
 from api.views import health_check
+{% if project.database.value != "none" %}
+from api.views import UserViewSet
+{% endif %}
+
+{% if project.database.value != "none" %}
+router = DefaultRouter()
+router.register(r"users", UserViewSet, basename="user")
+{% endif %}
 
 urlpatterns = [
     path("health/", health_check, name="health-check"),
+{% if project.database.value != "none" %}
+    path("", include(router.urls)),
+{% endif %}
 ]

@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 
 from app.api.health import router as health_router
+{% if project.database.value != "none" and project.orm.value != "none" %}
+from app.api.users import router as users_router
+{% endif %}
 
 app = FastAPI(title="{{ project.project_name }}")
 app.include_router(health_router)
+{% if project.database.value != "none" and project.orm.value != "none" %}
+app.include_router(users_router)
+{% endif %}

@@ -2,8 +2,14 @@ name: django_models
 files:
   - source: core/__init__.py.j2
     destination: core/__init__.py
+  - source: core/apps.py.j2
+    destination: core/apps.py
   - source: core/models.py.j2
     destination: core/models.py
+  - source: core/migrations/__init__.py.j2
+    destination: core/migrations/__init__.py
+  - source: core/migrations/0001_initial.py.j2
+    destination: core/migrations/0001_initial.py
 requires:
   - django
 conflicts:

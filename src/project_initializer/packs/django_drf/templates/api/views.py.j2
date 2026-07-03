@@ -1,7 +1,21 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+{% if project.database.value != "none" %}
+from rest_framework import viewsets
+
+from core.models import User
+
+from api.serializers import UserSerializer
+{% endif %}
 
 
 @api_view(["GET"])
 def health_check(request):
     return Response({"status": "ok"})
+
+
+{% if project.database.value != "none" %}
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by("-created_at")
+    serializer_class = UserSerializer
+{% endif %}

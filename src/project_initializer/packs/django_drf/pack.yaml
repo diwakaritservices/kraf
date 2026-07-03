@@ -4,6 +4,8 @@ dependencies:
 files:
   - source: api/__init__.py.j2
     destination: api/__init__.py
+  - source: api/serializers.py.j2
+    destination: api/serializers.py
   - source: api/views.py.j2
     destination: api/views.py
   - source: api/urls.py.j2

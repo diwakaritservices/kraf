@@ -31,7 +31,7 @@ def test_collect_answers_uses_polished_prompt_backend():
             "Inventory Service",
             "fastapi",
             "postgresql",
-            True,
+            "sqlalchemy",
             True,
             True,
             True,
@@ -45,7 +45,7 @@ def test_collect_answers_uses_polished_prompt_backend():
         "project_name": "Inventory Service",
         "project_type": "fastapi",
         "database": "postgresql",
-        "use_sqlalchemy": True,
+        "orm": "sqlalchemy",
         "use_alembic": True,
         "use_pytest": True,
         "use_ruff": True,
@@ -82,7 +82,7 @@ def test_collect_answers_skips_orm_prompts_without_database():
     answers = collect_answers(backend=backend)
 
     assert answers["database"] == "none"
-    assert answers["use_sqlalchemy"] is False
+    assert answers["orm"] == "none"
     assert answers["use_alembic"] is False
     assert backend.confirm_calls == [
         ("Include pytest?", True),

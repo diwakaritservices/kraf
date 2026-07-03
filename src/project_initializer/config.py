@@ -19,6 +19,12 @@ class Database(StrEnum):
     POSTGRESQL = "postgresql"
 
 
+class OrmChoice(StrEnum):
+    NONE = "none"
+    SQLALCHEMY = "sqlalchemy"
+    SQLMODEL = "sqlmodel"
+
+
 @dataclass(frozen=True)
 class ToolingOptions:
     use_docker: bool
@@ -35,7 +41,7 @@ class ProjectConfig:
     project_type: ProjectType
     database: Database
     tooling: ToolingOptions
-    use_sqlalchemy: bool
+    orm: OrmChoice
     use_alembic: bool
 
 
@@ -53,15 +59,12 @@ def normalize_answers(raw_answers: dict[str, Any], base_dir: Path | None = None)
     project_slug = normalize_project_slug(project_name)
     target_root = base_dir or Path.cwd()
 
-    use_sqlalchemy = bool(raw_answers.get("use_sqlalchemy", False))
+    orm = OrmChoice(str(raw_answers.get("orm", OrmChoice.NONE)))
     use_alembic = bool(raw_answers.get("use_alembic", False))
-    if project_type is not ProjectType.FASTAPI:
-        use_sqlalchemy = False
+    if project_type is not ProjectType.FASTAPI or database is Database.NONE:
+        orm = OrmChoice.NONE
         use_alembic = False
-    if database is Database.NONE:
-        use_sqlalchemy = False
-        use_alembic = False
-    if not use_sqlalchemy:
+    elif orm is OrmChoice.NONE:
         use_alembic = False
 
     return ProjectConfig(
@@ -76,6 +79,6 @@ def normalize_answers(raw_answers: dict[str, Any], base_dir: Path | None = None)
             use_pytest=bool(raw_answers.get("use_pytest", True)),
             use_ruff=bool(raw_answers.get("use_ruff", True)),
         ),
-        use_sqlalchemy=use_sqlalchemy,
+        orm=orm,
         use_alembic=use_alembic,
     )

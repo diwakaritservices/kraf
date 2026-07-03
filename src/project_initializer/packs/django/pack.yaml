@@ -22,7 +22,7 @@ files:
 make_targets:
   run: "$(VENV_PYTHON) manage.py runserver"
   migrate: "$(VENV_PYTHON) manage.py migrate"
-  migrations: "$(VENV_PYTHON) manage.py makemigrations"
-  makemigrations: "$(VENV_PYTHON) manage.py makemigrations"
+  migrations: "$(VENV_PYTHON) manage.py makemigrations core"
+  makemigrations: "$(VENV_PYTHON) manage.py makemigrations core"
 conflicts:
   - fastapi
